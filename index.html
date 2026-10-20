@@ -18,9 +18,17 @@
             color: #333;
         }
 
-        .lesson {
-            max-width: 350px;
+        .lesson-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
             margin: 20px auto;
+        }
+
+        .lesson {
+            width: 320px;
             background-color: #fff;
             border-radius: 8px;
             overflow: hidden;
@@ -46,12 +54,14 @@
 <body>
     <div id="app">
         <h1>{{ pageTitle }}</h1>
-        <div class="lesson">
-            <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt">
-            <div class="lesson-info">
-                <h2>{{ lesson.subject }}</h2>
-                <p>Location: {{ lesson.location }}</p>
-                <p>Price: £{{ lesson.price }}</p>
+        <div class="lesson-list">
+            <div class="lesson" v-for="lesson in lessons" :key="lesson.id">
+                <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt">
+                <div class="lesson-info">
+                    <h2>{{ lesson.subject }}</h2>
+                    <p>Location: {{ lesson.location }}</p>
+                    <p>Price: £{{ lesson.price }}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -63,13 +73,13 @@
             data() {
                 return {
                     pageTitle: "After School Lessons",
-                    lesson: {
-                        subject: "Maths",
-                        location: "Hendon",
-                        price: 100,
-                        image: "images/maths.png",
-                        imageAlt: "Maths lesson"
-                    }
+                    lessons: [
+                        { id: 1, subject: "Maths", location: "Hendon", price: 100, image: "images/maths.png", imageAlt: "Maths lesson" },
+                        { id: 2, subject: "English", location: "Westminster", price: 80, image: "images/english.png", imageAlt: "English lesson" },
+                        { id: 3, subject: "Science", location: "Wembley", price: 90, image: "images/science.png", imageAlt: "Science lesson" },
+                        { id: 4, subject: "Art", location: "Stratford", price: 95, image: "images/art.png", imageAlt: "Art lesson" },
+                        { id: 5, subject: "Music", location: "Knightsbridge", price: 120, image: "images/music.png", imageAlt: "Music lesson" }
+                    ]
                 }
             }
         }).mount("#app")
