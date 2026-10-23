@@ -14,33 +14,88 @@
 
 <body>
     <div id="app">
-        <h1>{{ pageTitle }}</h1>
-        <div class="sort-controls">
-            <label>Sort by:
-                <select v-model="sortBy">
-                    <option value="subject">Subject</option>
-                    <option value="location">Location</option>
-                    <option value="price">Price</option>
-                    <option value="spaces">Spaces</option>
-                </select>
-            </label>
-            <label>Order:
-                <select v-model="sortOrder">
-                    <option value="asc">Ascending</option>
-                    <option value="desc">Descending</option>
-                </select>
-            </label>
-        </div>
-        <div class="lesson-list">
-            <div class="lesson" v-for="lesson in sortedLessons" :key="lesson.id">
-                <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt">
-                <div class="lesson-info">
-                    <h2>{{ lesson.subject }}</h2>
-                    <p>Location: {{ lesson.location }}</p>
-                    <p>Price: £{{ lesson.price }}</p>
-                    <p>Spaces: {{ lesson.spaces }}</p>
+        <header class="site-header">
+            <h1>{{ pageTitle }}</h1>
+            <button class="cart-btn" v-on:click="toggleCart" :disabled="cart.length === 0">
+                {{ showCart ? "Back to lessons" : "Shopping cart (" + cartCount + ")" }}
+            </button>
+        </header>
+
+        <div v-if="!showCart">
+            <div class="sort-controls">
+                <label>Sort by:
+                    <select v-model="sortBy">
+                        <option value="subject">Subject</option>
+                        <option value="location">Location</option>
+                        <option value="price">Price</option>
+                        <option value="spaces">Spaces</option>
+                    </select>
+                </label>
+                <label>Order:
+                    <select v-model="sortOrder">
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                </label>
+            </div>
+            <div class="lesson-list">
+                <div class="lesson" v-for="lesson in sortedLessons" :key="lesson.id">
+                    <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt">
+                    <div class="lesson-info">
+                        <h2>{{ lesson.subject }}</h2>
+                        <p>Location: {{ lesson.location }}</p>
+                        <p>Price: £{{ lesson.price }}</p>
+                        <p>Spaces: {{ lesson.spaces }}</p>
+                        <button class="add-btn" v-on:click="addToCart(lesson)" :disabled="lesson.spaces === 0">Add to cart</button>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <div v-else class="cart-page">
+            <div v-if="orderSubmitted" class="confirmation">
+                <h2>Thank you!</h2>
+                <p>Your order has been submitted.</p>
+                <button class="continue-btn" v-on:click="continueShopping">Continue shopping</button>
+            </div>
+
+            <template v-else>
+                <h2>Shopping cart</h2>
+
+                <div class="cart-item" v-for="entry in cart" :key="entry.id">
+                    <div class="cart-item-info">
+                        <h3>{{ entry.subject }}</h3>
+                        <p>{{ entry.location }} &middot; £{{ entry.price }} &times; {{ entry.quantity }}</p>
+                    </div>
+                    <div class="cart-item-side">
+                        <span class="line-total">£{{ entry.price * entry.quantity }}</span>
+                        <button class="remove-btn" v-on:click="removeFromCart(entry)">Remove</button>
+                    </div>
+                </div>
+
+                <div class="cart-empty" v-if="cart.length === 0">
+                    <p>Your cart is empty.</p>
+                    <button class="continue-btn" v-on:click="continueShopping">Continue shopping</button>
+                </div>
+
+                <div class="cart-total" v-if="cart.length > 0">
+                    <span>Total</span>
+                    <strong>£{{ cartTotal }}</strong>
+                </div>
+
+                <div class="checkout">
+                    <h2>Checkout</h2>
+                    <div class="field">
+                        <label for="checkout-name">Name</label>
+                        <input id="checkout-name" type="text" v-model="checkoutName" placeholder="Letters only">
+                    </div>
+                    <div class="field">
+                        <label for="checkout-phone">Phone</label>
+                        <input id="checkout-phone" type="tel" v-model="checkoutPhone" placeholder="Numbers only">
+                    </div>
+                    <button class="checkout-btn" v-on:click="checkout">Checkout</button>
+                </div>
+            </template>
         </div>
     </div>
 

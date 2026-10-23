@@ -6,6 +6,11 @@ createApp({
             pageTitle: "Lesson Shop",
             sortBy: "subject",
             sortOrder: "asc",
+            showCart: false,
+            orderSubmitted: false,
+            checkoutName: "",
+            checkoutPhone: "",
+            cart: [],
             lessons: [
                 { id: 1, subject: "Maths", location: "Hendon", price: 100, spaces: 5, image: "images/maths.png", imageAlt: "Maths lesson" },
                 { id: 2, subject: "English", location: "Westminster", price: 80, spaces: 5, image: "images/english.png", imageAlt: "English lesson" },
@@ -32,6 +37,46 @@ createApp({
                 }
                 return String(a[key]).localeCompare(String(b[key])) * dir
             })
+        },
+        cartCount() {
+            return this.cart.reduce((total, entry) => total + entry.quantity, 0)
+        },
+        cartTotal() {
+            return this.cart.reduce((total, entry) => total + entry.price * entry.quantity, 0)
+        }
+    },
+    methods: {
+        addToCart(lesson) {
+            if (lesson.spaces === 0) {
+                return
+            }
+            lesson.spaces -= 1
+            const entry = this.cart.find(e => e.id === lesson.id)
+            if (entry) {
+                entry.quantity += 1
+            } else {
+                this.cart.push({ id: lesson.id, subject: lesson.subject, location: lesson.location, price: lesson.price, quantity: 1 })
+            }
+        },
+        removeFromCart(entry) {
+            const lesson = this.lessons.find(l => l.id === entry.id)
+            if (lesson) {
+                lesson.spaces += entry.quantity
+            }
+            this.cart = this.cart.filter(e => e.id !== entry.id)
+        },
+        toggleCart() {
+            this.showCart = !this.showCart
+        },
+        checkout() {
+            this.cart = []
+            this.orderSubmitted = true
+        },
+        continueShopping() {
+            this.showCart = false
+            this.orderSubmitted = false
+            this.checkoutName = ""
+            this.checkoutPhone = ""
         }
     }
 }).mount("#app")
