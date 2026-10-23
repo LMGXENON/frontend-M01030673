@@ -15,7 +15,7 @@ h1 {
 
 .site-header {
     position: relative;
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -35,7 +35,7 @@ h1 {
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 20px auto;
 }
 
@@ -69,7 +69,7 @@ h1 {
     flex-wrap: wrap;
     gap: 12px 20px;
     margin: 24px auto 0;
-    max-width: 1200px;
+    max-width: 1000px;
 }
 
 .sort-controls label {

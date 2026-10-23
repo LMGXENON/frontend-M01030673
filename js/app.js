@@ -38,9 +38,6 @@ createApp({
                 return String(a[key]).localeCompare(String(b[key])) * dir
             })
         },
-        cartCount() {
-            return this.cart.reduce((total, entry) => total + entry.quantity, 0)
-        },
         cartTotal() {
             return this.cart.reduce((total, entry) => total + entry.price * entry.quantity, 0)
         }
