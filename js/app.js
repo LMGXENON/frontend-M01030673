@@ -43,6 +43,15 @@ createApp({
         },
         cartTotal() {
             return this.cart.reduce((total, entry) => total + entry.price * entry.quantity, 0)
+        },
+        nameIsValid() {
+            return /^[A-Za-z ]+$/.test(this.checkoutName.trim())
+        },
+        phoneIsValid() {
+            return /^[0-9]+$/.test(this.checkoutPhone.trim())
+        },
+        canCheckout() {
+            return this.nameIsValid && this.phoneIsValid
         }
     },
     methods: {

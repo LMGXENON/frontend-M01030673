@@ -89,12 +89,14 @@
                     <div class="field">
                         <label for="checkout-name">Name</label>
                         <input id="checkout-name" type="text" v-model="checkoutName" placeholder="Letters only">
+                        <p class="field-error" v-if="checkoutName.trim() !== '' && !nameIsValid">Name must contain letters only.</p>
                     </div>
                     <div class="field">
                         <label for="checkout-phone">Phone</label>
                         <input id="checkout-phone" type="tel" v-model="checkoutPhone" placeholder="Numbers only">
+                        <p class="field-error" v-if="checkoutPhone.trim() !== '' && !phoneIsValid">Phone must contain numbers only.</p>
                     </div>
-                    <button class="checkout-btn" v-on:click="checkout">Checkout</button>
+                    <button class="checkout-btn" v-on:click="checkout" :disabled="!canCheckout">Checkout</button>
                 </div>
             </template>
         </div>
