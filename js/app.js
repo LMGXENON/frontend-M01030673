@@ -28,6 +28,9 @@ createApp({
         }
     },
     computed: {
+        cartCount() {
+            return this.cart.reduce((total, entry) => total + entry.quantity, 0)
+        },
         sortedLessons() {
             const key = this.sortBy
             const dir = this.sortOrder === "asc" ? 1 : -1

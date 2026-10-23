@@ -18,6 +18,7 @@
             <h1>{{ pageTitle }}</h1>
             <button class="cart-btn" v-on:click="toggleCart" :disabled="cart.length === 0">
                 {{ showCart ? "Back to lessons" : "Cart" }}
+                <span class="cart-count" v-if="!showCart && cartCount > 0">{{ cartCount }}</span>
             </button>
         </header>
 
