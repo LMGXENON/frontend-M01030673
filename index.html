@@ -6,19 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lesson Shop</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
     <div id="app">
         <h1>{{ pageTitle }}</h1>
+        <div class="sort-controls">
+            <label>Sort by:
+                <select v-model="sortBy">
+                    <option value="subject">Subject</option>
+                    <option value="location">Location</option>
+                    <option value="price">Price</option>
+                    <option value="spaces">Spaces</option>
+                </select>
+            </label>
+            <label>Order:
+                <select v-model="sortOrder">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </label>
+        </div>
         <div class="lesson-list">
-            <div class="lesson" v-for="lesson in lessons" :key="lesson.id">
+            <div class="lesson" v-for="lesson in sortedLessons" :key="lesson.id">
                 <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt">
                 <div class="lesson-info">
                     <h2>{{ lesson.subject }}</h2>
                     <p>Location: {{ lesson.location }}</p>
                     <p>Price: £{{ lesson.price }}</p>
+                    <p>Spaces: {{ lesson.spaces }}</p>
                 </div>
             </div>
         </div>
