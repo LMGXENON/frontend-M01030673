@@ -113,6 +113,7 @@ h1 {
 
 .cart-btn,
 .add-btn,
+.qty-btn,
 .remove-btn,
 .checkout-btn,
 .continue-btn {
@@ -141,12 +142,14 @@ h1 {
 
 .cart-btn:disabled,
 .add-btn:disabled,
+.qty-btn:disabled,
 .checkout-btn:disabled {
     background-color: #e2e5ea;
     color: #999;
     cursor: not-allowed;
 }
 
+.qty-btn,
 .remove-btn,
 .continue-btn {
     background-color: #fff;
@@ -154,6 +157,7 @@ h1 {
     border-color: #d5d9e0;
 }
 
+.qty-btn:hover:not(:disabled),
 .remove-btn:hover,
 .continue-btn:hover {
     border-color: #aab2c0;
@@ -161,6 +165,7 @@ h1 {
 
 .cart-btn:focus-visible,
 .add-btn:focus-visible,
+.qty-btn:focus-visible,
 .remove-btn:focus-visible,
 .checkout-btn:focus-visible,
 .continue-btn:focus-visible {
@@ -238,48 +243,20 @@ h1 {
 }
 
 .quantity-controls {
-    display: inline-flex;
-    align-items: stretch;
-    height: 38px;
-    border: 1px solid #d5d9e0;
-    border-radius: 8px;
-    background-color: #fff;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .qty-btn {
-    font-family: inherit;
     font-size: 16px;
-    font-weight: 600;
-    width: 36px;
-    padding: 0;
-    border: none;
-    background-color: #fff;
-    color: #333;
-    cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.qty-btn:hover:not(:disabled) {
-    background-color: #333;
-    color: #fff;
-}
-
-.qty-btn:disabled {
-    color: #bbb;
-    cursor: not-allowed;
-}
-
-.qty-btn:focus-visible {
-    outline: 2px solid #2d4ba0;
-    outline-offset: -2px;
+    line-height: 1;
+    padding: 10px 14px;
 }
 
 .qty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 30px;
+    min-width: 20px;
+    text-align: center;
     font-size: 14px;
     font-weight: 700;
     color: #333;
