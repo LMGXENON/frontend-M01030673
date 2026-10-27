@@ -70,7 +70,7 @@
                     </div>
                     <div class="cart-item-side">
                         <div class="quantity-controls">
-                            <button class="qty-btn" v-on:click="decreaseQuantity(entry)">-</button>
+                            <button class="qty-btn" v-on:click="decreaseQuantity(entry)">&#8722;</button>
                             <span class="qty">{{ entry.quantity }}</span>
                             <button class="qty-btn" v-on:click="increaseQuantity(entry)" :disabled="lessonSpaces(entry) === 0">+</button>
                         </div>
