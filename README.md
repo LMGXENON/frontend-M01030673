@@ -23,7 +23,7 @@ These are the four links the coursework brief asks for.
 - The cart button shows how many spaces are in the cart and opens the cart page. It is disabled when the cart is empty
 - In the cart you can remove lessons again and the spaces go back to the lesson list. The cart shows the price for each line and the total
 - The cart is saved in the browser so it is still there after you refresh the page
-- The checkout form checks the name and phone number with regular expressions. The name must be letters only and the phone number must be numbers only. The checkout button is disabled until both are correct
+- The checkout form checks the name and phone number with regular expressions. The name must be letters only with single spaces between words and the phone number must be 10 or 11 numbers. The checkout button is disabled until both are correct
 - When you check out, the order is sent to the server with a POST request, and then you see a thank you message and a button to continue shopping
 - The pictures for the lessons are also served by the backend server
 - The lessons are loaded with a fetchData() method that Vue calls in created() when the page starts

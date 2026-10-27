@@ -41,7 +41,7 @@
             </div>
             <div class="lesson-list">
                 <div class="lesson" v-for="lesson in sortedLessons" :key="lesson.id">
-                    <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt">
+                    <img v-bind:src="imageAddress(lesson)" v-bind:alt="lesson.imageAlt">
                     <div class="lesson-info">
                         <h2>{{ lesson.subject }}</h2>
                         <p>Location: {{ lesson.location }}</p>
@@ -88,13 +88,13 @@
                     <h2>Checkout</h2>
                     <div class="field">
                         <label for="checkout-name">Name</label>
-                        <input id="checkout-name" type="text" v-model="checkoutName" placeholder="Letters only">
-                        <p class="field-error" v-if="checkoutName.trim() !== '' && !nameIsValid">Name must contain letters only.</p>
+                        <input id="checkout-name" type="text" v-model="checkoutName" placeholder="Letters and spaces only">
+                        <p class="field-error" v-if="checkoutName.trim() !== '' && !nameIsValid">Name must contain letters only, with single spaces between words.</p>
                     </div>
                     <div class="field">
                         <label for="checkout-phone">Phone</label>
-                        <input id="checkout-phone" type="tel" v-model="checkoutPhone" placeholder="Numbers only">
-                        <p class="field-error" v-if="checkoutPhone.trim() !== '' && !phoneIsValid">Phone must contain numbers only.</p>
+                        <input id="checkout-phone" type="tel" v-model="checkoutPhone" placeholder="10 or 11 numbers">
+                        <p class="field-error" v-if="checkoutPhone.trim() !== '' && !phoneIsValid">Phone must contain 10 or 11 numbers only.</p>
                     </div>
                     <button class="checkout-btn" v-on:click="checkout" :disabled="!canCheckout">Checkout</button>
                 </div>
