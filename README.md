@@ -21,7 +21,7 @@ These are the four links the coursework brief asks for.
 - Sorts the lessons by subject, location, price or spaces, in ascending or descending order
 - Every lesson has an add to cart button. It adds one space to the cart and lowers the number of spaces left. The button stays visible and is disabled when no spaces are left
 - The cart button shows how many spaces are in the cart and opens the cart page. It is disabled when the cart is empty
-- In the cart you can remove lessons again and the spaces go back to the lesson list. The cart shows the price for each line and the total
+- In the cart the plus and minus buttons change how many spaces of a lesson you have, and Remove drops the lesson from the cart. The spaces go back to the lesson list. The cart shows the price for each line and the total
 - The cart is saved in the browser so it is still there after you refresh the page
 - The checkout form checks the name and phone number with regular expressions. The name must be letters only with single spaces between words and the phone number must be 10 or 11 numbers. The checkout button is disabled until both are correct
 - When you check out, the order is sent to the server with a POST request, and then you see a thank you message and a button to continue shopping

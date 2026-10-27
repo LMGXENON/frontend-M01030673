@@ -99,6 +99,30 @@ createApp({
             this.cart = this.cart.filter(e => e.id !== entry.id)
             this.saveCart()
         },
+        increaseQuantity(entry) {
+            const lesson = this.lessons.find(l => l.id === entry.id)
+            if (!lesson || lesson.spaces === 0) {
+                return
+            }
+            lesson.spaces -= 1
+            entry.quantity += 1
+            this.saveCart()
+        },
+        decreaseQuantity(entry) {
+            const lesson = this.lessons.find(l => l.id === entry.id)
+            if (lesson) {
+                lesson.spaces += 1
+            }
+            entry.quantity -= 1
+            if (entry.quantity === 0) {
+                this.cart = this.cart.filter(e => e.id !== entry.id)
+            }
+            this.saveCart()
+        },
+        lessonSpaces(entry) {
+            const lesson = this.lessons.find(l => l.id === entry.id)
+            return lesson ? lesson.spaces : 0
+        },
         toggleCart() {
             this.showCart = !this.showCart
         },

@@ -69,6 +69,11 @@
                         <p>{{ entry.location }} &middot; £{{ entry.price }} &times; {{ entry.quantity }}</p>
                     </div>
                     <div class="cart-item-side">
+                        <div class="quantity-controls">
+                            <button class="qty-btn" v-on:click="decreaseQuantity(entry)">-</button>
+                            <span class="qty">{{ entry.quantity }}</span>
+                            <button class="qty-btn" v-on:click="increaseQuantity(entry)" :disabled="lessonSpaces(entry) === 0">+</button>
+                        </div>
                         <span class="line-total">£{{ entry.price * entry.quantity }}</span>
                         <button class="remove-btn" v-on:click="removeFromCart(entry)">Remove</button>
                     </div>
