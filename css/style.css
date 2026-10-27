@@ -116,6 +116,7 @@ h1 {
 .qty-btn,
 .remove-btn,
 .checkout-btn,
+.retry-btn,
 .continue-btn {
     font-family: inherit;
     font-size: 14px;
@@ -129,14 +130,16 @@ h1 {
 
 .cart-btn,
 .add-btn,
-.checkout-btn {
+.checkout-btn,
+.retry-btn {
     background-color: #333;
     color: #fff;
 }
 
 .cart-btn:hover:not(:disabled),
 .add-btn:hover:not(:disabled),
-.checkout-btn:hover:not(:disabled) {
+.checkout-btn:hover:not(:disabled),
+.retry-btn:hover:not(:disabled) {
     background-color: #111;
 }
 
@@ -177,6 +180,7 @@ h1 {
 .qty-btn:focus-visible,
 .remove-btn:focus-visible,
 .checkout-btn:focus-visible,
+.retry-btn:focus-visible,
 .continue-btn:focus-visible {
     outline: 2px solid #2d4ba0;
     outline-offset: 2px;
@@ -290,6 +294,32 @@ h1 {
     align-items: center;
     padding: 4px 6px 16px;
     font-size: 16px;
+}
+
+/* load error */
+
+.load-error {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 32px 20px;
+    max-width: 1000px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.load-error h2 {
+    margin: 0 0 8px;
+}
+
+.load-error p {
+    margin: 0 0 18px;
+    color: #555;
+}
+
+.order-error {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: #c0392b;
 }
 
 /* checkout */

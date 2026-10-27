@@ -39,7 +39,12 @@
                     </select>
                 </label>
             </div>
-            <div class="lesson-list">
+            <div class="load-error" v-if="loadError">
+                <h2>Couldn't load the lessons</h2>
+                <p>The app can't reach the lesson server. Make sure the backend server is running, then try again.</p>
+                <button class="retry-btn" v-on:click="fetchData">Try again</button>
+            </div>
+            <div class="lesson-list" v-else>
                 <div class="lesson" v-for="lesson in sortedLessons" :key="lesson.id">
                     <img v-bind:src="imageAddress(lesson)" v-bind:alt="lesson.imageAlt">
                     <div class="lesson-info">
@@ -101,6 +106,7 @@
                         <input id="checkout-phone" type="tel" v-model="checkoutPhone" placeholder="10 or 11 numbers">
                         <p class="field-error" v-if="checkoutPhone.trim() !== '' && !phoneIsValid">Phone must contain 10 or 11 numbers only.</p>
                     </div>
+                    <p class="order-error" v-if="orderError">Your order couldn't be sent. Make sure the backend server is running, then try again.</p>
                     <button class="checkout-btn" v-on:click="checkout" :disabled="!canCheckout">Checkout</button>
                 </div>
             </template>

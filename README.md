@@ -27,12 +27,13 @@ These are the four links the coursework brief asks for.
 - When you check out, the order is sent to the server with a POST request, and then you see a thank you message and a button to continue shopping
 - The pictures for the lessons are also served by the backend server
 - The lessons are loaded with a fetchData() method that Vue calls in created() when the page starts
+- If the app can't reach the server it shows an error message with a try again button instead of an empty page. A failed checkout keeps your cart and shows an error message too
 
 ## Running it on your computer
 
 1. Start the server first (see the backend README): node server.js
 2. Open this folder with Live Server and open index.html
-3. The page asks the server at http://localhost:3001/lessons for the lessons and gets the pictures from the server too. If the server is not running you see no lessons.
+3. The page asks the server at http://localhost:3001/lessons for the lessons and gets the pictures from the server too. If the server is not running you see an error message with a try again button.
 
 ## What I built it with
 

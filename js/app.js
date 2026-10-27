@@ -10,6 +10,8 @@ createApp({
             sortOrder: "asc",
             showCart: false,
             orderSubmitted: false,
+            loadError: false,
+            orderError: false,
             checkoutName: "",
             checkoutPhone: "",
             cart: [],
@@ -50,9 +52,18 @@ createApp({
     methods: {
         async fetchData() {
             const url = SHOP_URL + "/lessons"
-            let response = await fetch(url)
-            this.lessons = await response.json()
-            this.applyCartToLessons()
+            this.loadError = false
+            try {
+                let response = await fetch(url)
+                if (!response.ok) {
+                    throw new Error("Server returned " + response.status)
+                }
+                this.lessons = await response.json()
+                this.applyCartToLessons()
+            } catch (error) {
+                this.lessons = []
+                this.loadError = true
+            }
         },
         loadCart() {
             try {
@@ -135,7 +146,16 @@ createApp({
                 },
                 body: JSON.stringify({ name: this.checkoutName, phone: this.checkoutPhone, lessons: this.cart })
             }
-            let response = await fetch(url, options)
+            this.orderError = false
+            try {
+                let response = await fetch(url, options)
+                if (!response.ok) {
+                    throw new Error("Server returned " + response.status)
+                }
+            } catch (error) {
+                this.orderError = true
+                return
+            }
             this.cart = []
             this.saveCart()
             this.orderSubmitted = true
