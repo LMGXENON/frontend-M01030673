@@ -1,3 +1,5 @@
+const SHOP_URL = "http://localhost:3001"
+
 const { createApp } = Vue
 
 createApp({
@@ -42,13 +44,39 @@ createApp({
         }
     },
     created() {
+        this.loadCart()
         this.fetchData()
     },
     methods: {
         async fetchData() {
-            const url = "http://localhost:3001/"
+            const url = SHOP_URL + "/lessons"
             let response = await fetch(url)
             this.lessons = await response.json()
+            this.applyCartToLessons()
+        },
+        loadCart() {
+            try {
+                const saved = localStorage.getItem("lessonShopCart")
+                if (saved) {
+                    this.cart = JSON.parse(saved)
+                }
+            } catch (error) {
+                this.cart = []
+            }
+        },
+        saveCart() {
+            localStorage.setItem("lessonShopCart", JSON.stringify(this.cart))
+        },
+        applyCartToLessons() {
+            for (const entry of this.cart) {
+                const lesson = this.lessons.find(l => l.id === entry.id)
+                if (lesson) {
+                    lesson.spaces -= entry.quantity
+                }
+            }
+        },
+        imageAddress(lesson) {
+            return SHOP_URL + "/" + lesson.image
         },
         addToCart(lesson) {
             if (lesson.spaces === 0) {
@@ -61,6 +89,7 @@ createApp({
             } else {
                 this.cart.push({ id: lesson.id, subject: lesson.subject, location: lesson.location, price: lesson.price, quantity: 1 })
             }
+            this.saveCart()
         },
         removeFromCart(entry) {
             const lesson = this.lessons.find(l => l.id === entry.id)
@@ -68,12 +97,23 @@ createApp({
                 lesson.spaces += entry.quantity
             }
             this.cart = this.cart.filter(e => e.id !== entry.id)
+            this.saveCart()
         },
         toggleCart() {
             this.showCart = !this.showCart
         },
-        checkout() {
+        async checkout() {
+            const url = SHOP_URL + "/orders"
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name: this.checkoutName, phone: this.checkoutPhone, lessons: this.cart })
+            }
+            let response = await fetch(url, options)
             this.cart = []
+            this.saveCart()
             this.orderSubmitted = true
         },
         continueShopping() {

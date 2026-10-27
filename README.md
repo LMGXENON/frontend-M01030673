@@ -22,15 +22,17 @@ These are the four links the coursework brief asks for.
 - Every lesson has an add to cart button. It adds one space to the cart and lowers the number of spaces left. The button stays visible and is disabled when no spaces are left
 - The cart button shows how many spaces are in the cart and opens the cart page. It is disabled when the cart is empty
 - In the cart you can remove lessons again and the spaces go back to the lesson list. The cart shows the price for each line and the total
+- The cart is saved in the browser so it is still there after you refresh the page
 - The checkout form checks the name and phone number with regular expressions. The name must be letters only and the phone number must be numbers only. The checkout button is disabled until both are correct
-- After checkout you see a thank you message and a button to continue shopping
+- When you check out, the order is sent to the server with a POST request, and then you see a thank you message and a button to continue shopping
+- The pictures for the lessons are also served by the backend server
 - The lessons are loaded with a fetchData() method that Vue calls in created() when the page starts
 
 ## Running it on your computer
 
 1. Start the server first (see the backend README): node server.js
 2. Open this folder with Live Server and open index.html
-3. The page asks the server at http://localhost:3001/ for the lessons. If the server is not running you see no lessons.
+3. The page asks the server at http://localhost:3001/lessons for the lessons and gets the pictures from the server too. If the server is not running you see no lessons.
 
 ## What I built it with
 
