@@ -54,7 +54,15 @@ createApp({
             return this.nameIsValid && this.phoneIsValid
         }
     },
+    created() {
+        this.fetchData()
+    },
     methods: {
+        async fetchData() {
+            const url = "http://localhost:3001/"
+            let response = await fetch(url)
+            this.lessons = await response.json()
+        },
         addToCart(lesson) {
             if (lesson.spaces === 0) {
                 return
