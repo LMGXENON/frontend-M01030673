@@ -1,4 +1,4 @@
-const SHOP_URL = "http://localhost:3001"
+const SHOP_URL = "https://backend-m01030673.onrender.com"
 
 const { createApp } = Vue
 
