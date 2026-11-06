@@ -32,8 +32,18 @@ createApp({
                 return String(a[key]).localeCompare(String(b[key])) * dir
             })
         },
+        cartLines() {
+            const lines = []
+            for (const entry of this.cart) {
+                const lesson = this.lessons.find(l => l.id === entry.id)
+                if (lesson) {
+                    lines.push({ entry: entry, lesson: lesson })
+                }
+            }
+            return lines
+        },
         cartTotal() {
-            return this.cart.reduce((total, entry) => total + entry.price * entry.quantity, 0)
+            return this.cartLines.reduce((total, line) => total + line.lesson.price * line.entry.quantity, 0)
         },
         nameIsValid() {
             return /^[A-Za-z]+( [A-Za-z]+)*$/.test(this.checkoutName.trim())
@@ -64,6 +74,18 @@ createApp({
                 this.lessons = []
                 this.loadError = true
             }
+        },
+        async updateLesson(lesson, updates) {
+            const url = SHOP_URL + "/lessons/" + lesson._id
+            const options = {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updates)
+            }
+            let response = await fetch(url, options)
+            return response
         },
         loadCart() {
             try {
@@ -98,7 +120,8 @@ createApp({
             if (entry) {
                 entry.quantity += 1
             } else {
-                this.cart.push({ id: lesson.id, subject: lesson.subject, location: lesson.location, price: lesson.price, quantity: 1 })
+                // the cart only stores the id number of the lesson, not all its details
+                this.cart.push({ id: lesson.id, quantity: 1 })
             }
             this.saveCart()
         },
@@ -152,13 +175,24 @@ createApp({
                 if (!response.ok) {
                     throw new Error("Server returned " + response.status)
                 }
+                // the order is saved, so store the new number of spaces for each lesson in the database
+                for (const entry of this.cart) {
+                    const lesson = this.lessons.find(l => l.id === entry.id)
+                    if (lesson) {
+                        await this.updateLesson(lesson, { spaces: lesson.spaces })
+                    }
+                }
             } catch (error) {
                 this.orderError = true
                 return
             }
             this.cart = []
             this.saveCart()
+            this.checkoutName = ""
+            this.checkoutPhone = ""
             this.orderSubmitted = true
+            // read the lessons again so the pages show the spaces left in the database
+            this.fetchData()
         },
         continueShopping() {
             this.showCart = false

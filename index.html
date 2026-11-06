@@ -68,28 +68,28 @@
             <template v-else>
                 <h2>Shopping cart</h2>
 
-                <div class="cart-item" v-for="entry in cart" :key="entry.id">
+                <div class="cart-item" v-for="line in cartLines" :key="line.entry.id">
                     <div class="cart-item-info">
-                        <h3>{{ entry.subject }}</h3>
-                        <p>{{ entry.location }} &middot; £{{ entry.price }} &times; {{ entry.quantity }}</p>
+                        <h3>{{ line.lesson.subject }}</h3>
+                        <p>{{ line.lesson.location }} &middot; £{{ line.lesson.price }} &times; {{ line.entry.quantity }}</p>
                     </div>
                     <div class="cart-item-side">
                         <div class="quantity-controls">
-                            <button class="qty-btn" v-on:click="decreaseQuantity(entry)">&#8722;</button>
-                            <span class="qty">{{ entry.quantity }}</span>
-                            <button class="qty-btn" v-on:click="increaseQuantity(entry)" :disabled="lessonSpaces(entry) === 0">+</button>
+                            <button class="qty-btn" v-on:click="decreaseQuantity(line.entry)">&#8722;</button>
+                            <span class="qty">{{ line.entry.quantity }}</span>
+                            <button class="qty-btn" v-on:click="increaseQuantity(line.entry)" :disabled="line.lesson.spaces === 0">+</button>
                         </div>
-                        <span class="line-total">£{{ entry.price * entry.quantity }}</span>
-                        <button class="remove-btn" v-on:click="removeFromCart(entry)">Remove</button>
+                        <span class="line-total">£{{ line.lesson.price * line.entry.quantity }}</span>
+                        <button class="remove-btn" v-on:click="removeFromCart(line.entry)">Remove</button>
                     </div>
                 </div>
 
-                <div class="cart-empty" v-if="cart.length === 0">
+                <div class="cart-empty" v-if="cartLines.length === 0">
                     <p>Your cart is empty.</p>
                     <button class="continue-btn" v-on:click="continueShopping">Continue shopping</button>
                 </div>
 
-                <div class="cart-total" v-if="cart.length > 0">
+                <div class="cart-total" v-if="cartLines.length > 0">
                     <span>Total</span>
                     <strong>£{{ cartTotal }}</strong>
                 </div>

@@ -4,7 +4,7 @@ CST3144 coursework. Student ID: M01030673.
 
 This is the frontend of Lesson Shop, an online shop for lessons. I built it with Vue.js.
 
-Each lesson has a subject, a location, a price, a number of spaces and a picture. You can sort the lessons, add them to a cart and check out with your name and phone number. The lesson data comes from my Express.js server.
+Each lesson has a subject, a location, a price, a number of spaces and a picture. You can sort the lessons, add them to a cart and check out with your name and phone number. The lesson data comes from my Express.js server, which gets it from MongoDB Atlas.
 
 ## Links
 
@@ -24,7 +24,8 @@ These are the four links the coursework brief asks for.
 - In the cart the plus and minus buttons change how many spaces of a lesson you have, and Remove drops the lesson from the cart. The spaces go back to the lesson list. The cart shows the price for each line and the total
 - The cart is saved in the browser so it is still there after you refresh the page
 - The checkout form checks the name and phone number with regular expressions. The name must be letters only with single spaces between words and the phone number must be 10 or 11 numbers. The checkout button is disabled until both are correct
-- When you check out, the order is sent to the server with a POST request, and then you see a thank you message and a button to continue shopping
+- When you check out, the order is sent to the server with a POST request and saved in the database. Every lesson in the order is then updated with a PUT request, which stores the new number of spaces left. Then you see a thank you message and a button to continue shopping
+- The cart only stores the id number of each lesson and how many spaces you want, not the subject, location or price. Those details come from the lesson list, so an order saved in the database does not repeat the same information for every lesson
 - The pictures for the lessons are also served by the backend server
 - The lessons are loaded with a fetchData() method that Vue calls in created() when the page starts
 - If the app can't reach the server it shows an error message with a try again button instead of an empty page. A failed checkout keeps your cart and shows an error message too
