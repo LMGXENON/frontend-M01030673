@@ -4,7 +4,7 @@ CST3144 coursework. Student ID: M01030673.
 
 This is the frontend of Lesson Shop, an online shop for lessons. I built it with Vue.js.
 
-Each lesson has a subject, a location, a price, a number of spaces and a picture. You can sort the lessons, add them to a cart and check out with your name and phone number. The lesson data comes from my Express.js server, which gets it from MongoDB Atlas.
+Each lesson has a subject, a location, a price, a number of spaces and a picture. You can search the lessons, sort them, filter them by teacher, add them to a cart and check out with your name and phone number. The lesson data comes from my Express.js server, which gets it from MongoDB Atlas.
 
 ## Links
 
@@ -19,6 +19,9 @@ These are the four links the coursework brief asks for.
 
 - Shows the lessons from the server with subject, location, price, spaces and a picture
 - Sorts the lessons by subject, location, price or spaces, in ascending or descending order
+- There is a search box above the lessons with a Search button and a Clear button. Search asks the server for the lessons that match what you typed, in the subject, location, price or spaces, and the page shows a message when nothing matches. Clear brings the whole list back
+- The teacher dropdown lists the teachers from the server. Picking one narrows the lesson list down to the lessons that teacher teaches, and Choose a teacher shows them all again
+- Every lesson card also shows how many spaces of it are already sold, which comes from the enrolment route on the server
 - Every lesson has an add to cart button. It adds one space to the cart and lowers the number of spaces left. The button stays visible and is disabled when no spaces are left
 - The cart button shows how many spaces are in the cart and opens the cart page. It is disabled when the cart is empty
 - In the cart the plus and minus buttons change how many spaces of a lesson you have, and Remove drops the lesson from the cart. The spaces go back to the lesson list. The cart shows the price for each line and the total
@@ -32,9 +35,10 @@ These are the four links the coursework brief asks for.
 
 ## Running it on your computer
 
-1. Start the server first (see the backend README): node server.js
-2. Open this folder with Live Server and open index.html
-3. The page asks the server at http://localhost:3001/lessons for the lessons and gets the pictures from the server too. If the server is not running you see an error message with a try again button.
+1. Open this folder with Live Server and open index.html
+2. The page asks my server on render.com for the lessons and gets the pictures from there too, so nothing has to be running on your computer. The address is in SHOP_URL at the top of js/app.js
+3. To use the server on your own computer instead, start it with node server.js (see the backend README) and change SHOP_URL to http://localhost:3001
+4. If the server cannot be reached you see an error message with a try again button instead of an empty page
 
 ## What I built it with
 
