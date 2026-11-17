@@ -13,7 +13,7 @@ These are the four links the coursework brief asks for.
 1. [Vue.js App] GitHub repository: https://github.com/LMGXENON/frontend-M01030673
 2. [Vue.js App] GitHub Pages, the app runs from here: https://lmgxenon.github.io/frontend-M01030673/
 3. [Express.js App] GitHub repository: https://github.com/LMGXENON/backend-M01030673
-4. [Express.js App] render.com route that returns all the lessons: https://backend-m01030673.onrender.com/
+4. [Express.js App] render.com route that returns all the lessons: https://backend-m01030673.onrender.com/lessons
 
 ## What the app does
 
