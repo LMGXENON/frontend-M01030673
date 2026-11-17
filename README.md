@@ -19,7 +19,7 @@ These are the four links the coursework brief asks for.
 
 - Shows the lessons from the server with subject, location, price, spaces and a picture
 - Sorts the lessons by subject, location, price or spaces, in ascending or descending order
-- There is a search box above the lessons with a Search button and a Clear button. The results update as you type: the page waits until you pause, then asks the server for the lessons that match in the subject, location, price or spaces. That wait stops it sending a request for every letter. Search and the Enter key search straight away, Clear brings the whole list back, and a message shows when nothing matches
+- There is a search box above the lessons with a Search button and a Clear button. The results update as you type: the page waits until you pause, then asks the server for the lessons whose subject, location or price starts with what you typed. That wait stops it sending a request for every letter. Search and the Enter key search straight away, Clear brings the whole list back, and a message shows when nothing matches
 - The teacher dropdown lists the teachers from the server. Picking one narrows the lesson list down to the lessons that teacher teaches, and Choose a teacher shows them all again
 - Every lesson card also shows how many spaces of it are already sold, which comes from the enrolment route on the server
 - Every lesson has an add to cart button. It adds one space to the cart and lowers the number of spaces left. The button stays visible and is disabled when no spaces are left
