@@ -74,6 +74,47 @@ h1 {
     font-weight: 700;
 }
 
+.teacher-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin: 24px auto 0;
+    max-width: 1000px;
+}
+
+.teacher-lessons {
+    background-color: #fff;
+    border-radius: 8px;
+    max-width: 1000px;
+    margin: 14px auto 0;
+    padding: 16px 20px;
+}
+
+.teacher-lessons h2 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.teacher-lessons ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.teacher-lessons li {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.teacher-empty {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
 .sort-controls {
     display: flex;
     justify-content: center;
@@ -84,7 +125,8 @@ h1 {
     max-width: 1000px;
 }
 
-.sort-controls label {
+.sort-controls label,
+.teacher-controls label {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -93,7 +135,8 @@ h1 {
     color: #555;
 }
 
-.sort-controls select {
+.sort-controls select,
+.teacher-controls select {
     appearance: none;
     -webkit-appearance: none;
     font-family: inherit;
@@ -112,11 +155,13 @@ h1 {
     cursor: pointer;
 }
 
-.sort-controls select:hover {
+.sort-controls select:hover,
+.teacher-controls select:hover {
     border-color: #aab2c0;
 }
 
-.sort-controls select:focus-visible {
+.sort-controls select:focus-visible,
+.teacher-controls select:focus-visible {
     outline: 2px solid #2d4ba0;
     outline-offset: 2px;
 }

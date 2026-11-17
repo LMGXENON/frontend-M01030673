@@ -16,7 +16,10 @@ createApp({
             checkoutName: "",
             checkoutPhone: "",
             cart: [],
-            lessons: []
+            lessons: [],
+            teachers: [],
+            teacherId: "",
+            teacherLessons: []
         }
     },
     computed: {
@@ -46,6 +49,10 @@ createApp({
         cartTotal() {
             return this.cartLines.reduce((total, line) => total + line.lesson.price * line.entry.quantity, 0)
         },
+        teacherName() {
+            const teacher = this.teachers.find(t => String(t.id) === String(this.teacherId))
+            return teacher ? teacher.firstName + " " + teacher.lastName : ""
+        },
         nameIsValid() {
             return /^[A-Za-z]+( [A-Za-z]+)*$/.test(this.checkoutName.trim())
         },
@@ -59,6 +66,7 @@ createApp({
     created() {
         this.loadCart()
         this.fetchData()
+        this.loadTeachers()
     },
     methods: {
         async fetchData() {
@@ -116,6 +124,35 @@ createApp({
         async clearSearch() {
             this.searchText = ""
             await this.fetchData()
+        },
+        async loadTeachers() {
+            // fill the teacher picker with every teacher in the database
+            try {
+                let response = await fetch(SHOP_URL + "/teachers")
+                if (!response.ok) {
+                    throw new Error("Server returned " + response.status)
+                }
+                this.teachers = await response.json()
+            } catch (error) {
+                this.teachers = []
+            }
+        },
+        async loadTeacherLessons() {
+            this.teacherLessons = []
+            if (this.teacherId === "") {
+                // no teacher picked, so there is nothing to show
+                return
+            }
+            try {
+                let response = await fetch(SHOP_URL + "/teachers/" + this.teacherId + "/lessons")
+                if (!response.ok) {
+                    throw new Error("Server returned " + response.status)
+                }
+                let data = await response.json()
+                this.teacherLessons = data.lessons
+            } catch (error) {
+                this.teacherLessons = []
+            }
         },
         async updateLesson(lesson, updates) {
             const url = SHOP_URL + "/lessons/" + lesson._id

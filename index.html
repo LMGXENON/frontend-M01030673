@@ -23,6 +23,25 @@
         </header>
 
         <div v-if="!showCart">
+            <div class="teacher-controls">
+                <label>Teacher:
+                    <select v-model="teacherId" v-on:change="loadTeacherLessons">
+                        <option value="">Choose a teacher</option>
+                        <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
+                            {{ teacher.firstName }} {{ teacher.lastName }}
+                        </option>
+                    </select>
+                </label>
+            </div>
+            <div class="teacher-lessons" v-if="teacherId !== ''">
+                <h2>Lessons taught by {{ teacherName }}</h2>
+                <p class="teacher-empty" v-if="teacherLessons.length === 0">This teacher has no lessons.</p>
+                <ul v-else>
+                    <li v-for="lesson in teacherLessons" :key="lesson.id">
+                        {{ lesson.subject }} in {{ lesson.location }}, £{{ lesson.price }}, {{ lesson.spaces }} spaces left
+                    </li>
+                </ul>
+            </div>
             <div class="sort-controls">
                 <label>Sort by:
                     <select v-model="sortBy">
