@@ -23,15 +23,33 @@
         </header>
 
         <div v-if="!showCart">
-            <div class="teacher-controls">
-                <label>Teacher:
-                    <select v-model="teacherId" v-on:change="loadTeacherLessons">
-                        <option value="">Choose a teacher</option>
-                        <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
-                            {{ teacher.firstName }} {{ teacher.lastName }}
-                        </option>
-                    </select>
-                </label>
+            <div class="filters">
+                <div class="teacher-controls">
+                    <label>Teacher:
+                        <select v-model="teacherId" v-on:change="loadTeacherLessons">
+                            <option value="">Choose a teacher</option>
+                            <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
+                                {{ teacher.firstName }} {{ teacher.lastName }}
+                            </option>
+                        </select>
+                    </label>
+                </div>
+                <div class="sort-controls">
+                    <label>Sort by:
+                        <select v-model="sortBy">
+                            <option value="subject">Subject</option>
+                            <option value="location">Location</option>
+                            <option value="price">Price</option>
+                            <option value="spaces">Spaces</option>
+                        </select>
+                    </label>
+                    <label>Order:
+                        <select v-model="sortOrder">
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+                    </label>
+                </div>
             </div>
             <div class="teacher-lessons" v-if="teacherId !== ''">
                 <h2>Lessons taught by {{ teacherName }}</h2>
@@ -41,22 +59,6 @@
                         {{ lesson.subject }} in {{ lesson.location }}, £{{ lesson.price }}, {{ lesson.spaces }} spaces left
                     </li>
                 </ul>
-            </div>
-            <div class="sort-controls">
-                <label>Sort by:
-                    <select v-model="sortBy">
-                        <option value="subject">Subject</option>
-                        <option value="location">Location</option>
-                        <option value="price">Price</option>
-                        <option value="spaces">Spaces</option>
-                    </select>
-                </label>
-                <label>Order:
-                    <select v-model="sortOrder">
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
-                </label>
             </div>
             <div class="search-controls">
                 <input id="search-text" type="text" v-model="searchText" placeholder="Search lessons" v-on:keyup.enter="searchLessons">

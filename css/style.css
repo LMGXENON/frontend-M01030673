@@ -74,14 +74,24 @@ h1 {
     font-weight: 700;
 }
 
-.teacher-controls {
+.filters {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     gap: 12px 20px;
-    margin: 24px auto 0;
+    width: 100%;
     max-width: 1000px;
+    margin: 24px auto 0;
+    box-sizing: border-box;
+}
+
+.teacher-controls,
+.sort-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 20px;
 }
 
 .teacher-lessons {
@@ -113,16 +123,6 @@ h1 {
     margin: 0;
     font-size: 14px;
     color: #555;
-}
-
-.sort-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px 20px;
-    margin: 24px auto 0;
-    max-width: 1000px;
 }
 
 .sort-controls label,
