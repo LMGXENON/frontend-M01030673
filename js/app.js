@@ -1,4 +1,5 @@
-const SHOP_URL = "https://backend-m01030673.onrender.com"
+// LOCAL TESTING ONLY - put the render url back before committing
+const SHOP_URL = "http://localhost:3001"
 
 const { createApp } = Vue
 
@@ -8,6 +9,7 @@ createApp({
             pageTitle: "Lesson Shop",
             sortBy: "subject",
             sortOrder: "asc",
+            searchText: "",
             showCart: false,
             orderSubmitted: false,
             loadError: false,
@@ -90,6 +92,31 @@ createApp({
                     lesson.enrolment = 0
                 }
             }
+        },
+        async searchLessons() {
+            const text = this.searchText.trim()
+            if (text === "") {
+                // nothing typed, so show the whole list again
+                await this.fetchData()
+                return
+            }
+            this.loadError = false
+            try {
+                let response = await fetch(SHOP_URL + "/search/" + encodeURIComponent(text))
+                if (!response.ok) {
+                    throw new Error("Server returned " + response.status)
+                }
+                this.lessons = await response.json()
+                this.applyCartToLessons()
+                await this.loadEnrolment()
+            } catch (error) {
+                this.lessons = []
+                this.loadError = true
+            }
+        },
+        async clearSearch() {
+            this.searchText = ""
+            await this.fetchData()
         },
         async updateLesson(lesson, updates) {
             const url = SHOP_URL + "/lessons/" + lesson._id

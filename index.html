@@ -39,12 +39,18 @@
                     </select>
                 </label>
             </div>
+            <div class="search-controls">
+                <input id="search-text" type="text" v-model="searchText" placeholder="Search lessons" v-on:keyup.enter="searchLessons">
+                <button class="search-btn" v-on:click="searchLessons">Search</button>
+                <button class="clear-btn" v-if="searchText !== ''" v-on:click="clearSearch">Clear</button>
+            </div>
             <div class="load-error" v-if="loadError">
                 <h2>Couldn't load the lessons</h2>
                 <p>The app can't reach the lesson server. Make sure the backend server is running, then try again.</p>
                 <button class="retry-btn" v-on:click="fetchData">Try again</button>
             </div>
             <div class="lesson-list" v-else>
+                <p class="no-results" v-if="sortedLessons.length === 0">No lessons match your search.</p>
                 <div class="lesson" v-for="lesson in sortedLessons" :key="lesson.id">
                     <img v-bind:src="imageAddress(lesson)" v-bind:alt="lesson.imageAlt">
                     <div class="lesson-info">
