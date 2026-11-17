@@ -70,9 +70,25 @@ createApp({
                 }
                 this.lessons = await response.json()
                 this.applyCartToLessons()
+                await this.loadEnrolment()
             } catch (error) {
                 this.lessons = []
                 this.loadError = true
+            }
+        },
+        async loadEnrolment() {
+            // ask the server how many spaces of each lesson have already been sold
+            for (const lesson of this.lessons) {
+                lesson.enrolment = 0
+                try {
+                    let response = await fetch(SHOP_URL + "/enrolment/" + lesson.id)
+                    if (response.ok) {
+                        let data = await response.json()
+                        lesson.enrolment = data.enrolment
+                    }
+                } catch (error) {
+                    lesson.enrolment = 0
+                }
             }
         },
         async updateLesson(lesson, updates) {

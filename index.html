@@ -52,6 +52,7 @@
                         <p>Location: {{ lesson.location }}</p>
                         <p>Price: £{{ lesson.price }}</p>
                         <p>Spaces: {{ lesson.spaces }}</p>
+                        <p v-if="lesson.enrolment !== undefined">Already enrolled: {{ lesson.enrolment }}</p>
                         <button class="add-btn" v-on:click="addToCart(lesson)" :disabled="lesson.spaces === 0">Add to cart</button>
                     </div>
                 </div>
