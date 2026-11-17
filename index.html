@@ -51,17 +51,8 @@
                     </label>
                 </div>
             </div>
-            <div class="teacher-lessons" v-if="teacherId !== ''">
-                <h2>Lessons taught by {{ teacherName }}</h2>
-                <p class="teacher-empty" v-if="teacherLessons.length === 0">This teacher has no lessons.</p>
-                <ul v-else>
-                    <li v-for="lesson in teacherLessons" :key="lesson.id">
-                        {{ lesson.subject }} in {{ lesson.location }}, £{{ lesson.price }}, {{ lesson.spaces }} spaces left
-                    </li>
-                </ul>
-            </div>
             <div class="search-controls">
-                <input id="search-text" type="text" v-model="searchText" placeholder="Search lessons" v-on:keyup.enter="searchLessons">
+                <input type="text" v-model="searchText" placeholder="Search lessons" v-on:keyup.enter="searchLessons">
                 <button class="search-btn" v-on:click="searchLessons">Search</button>
                 <button class="clear-btn" v-if="searchText !== ''" v-on:click="clearSearch">Clear</button>
             </div>
@@ -71,7 +62,7 @@
                 <button class="retry-btn" v-on:click="fetchData">Try again</button>
             </div>
             <div class="lesson-list" v-else>
-                <p class="no-results" v-if="sortedLessons.length === 0">No lessons match your search.</p>
+                <p class="no-results" v-if="sortedLessons.length === 0">{{ noResultsText }}</p>
                 <div class="lesson" v-for="lesson in sortedLessons" :key="lesson.id">
                     <img v-bind:src="imageAddress(lesson)" v-bind:alt="lesson.imageAlt">
                     <div class="lesson-info">

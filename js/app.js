@@ -19,7 +19,7 @@ createApp({
             lessons: [],
             teachers: [],
             teacherId: "",
-            teacherLessons: []
+            teacherLessonIds: []
         }
     },
     computed: {
@@ -29,7 +29,11 @@ createApp({
         sortedLessons() {
             const key = this.sortBy
             const dir = this.sortOrder === "asc" ? 1 : -1
-            return [...this.lessons].sort((a, b) => {
+            // a picked teacher narrows the list down to the lessons they teach
+            const lessons = this.teacherId === ""
+                ? this.lessons
+                : this.lessons.filter(l => this.teacherLessonIds.includes(l.id))
+            return [...lessons].sort((a, b) => {
                 if (key === "price" || key === "spaces") {
                     return (a[key] - b[key]) * dir
                 }
@@ -49,9 +53,14 @@ createApp({
         cartTotal() {
             return this.cartLines.reduce((total, line) => total + line.lesson.price * line.entry.quantity, 0)
         },
-        teacherName() {
-            const teacher = this.teachers.find(t => String(t.id) === String(this.teacherId))
-            return teacher ? teacher.firstName + " " + teacher.lastName : ""
+        noResultsText() {
+            if (this.searchText.trim() !== "") {
+                return "No lessons match your search."
+            } else if (this.teacherId !== "") {
+                return "This teacher has no lessons."
+            } else {
+                return "No lessons to show."
+            }
         },
         nameIsValid() {
             return /^[A-Za-z]+( [A-Za-z]+)*$/.test(this.checkoutName.trim())
@@ -138,9 +147,9 @@ createApp({
             }
         },
         async loadTeacherLessons() {
-            this.teacherLessons = []
+            this.teacherLessonIds = []
             if (this.teacherId === "") {
-                // no teacher picked, so there is nothing to show
+                // no teacher picked, so the whole list is shown again
                 return
             }
             try {
@@ -149,9 +158,10 @@ createApp({
                     throw new Error("Server returned " + response.status)
                 }
                 let data = await response.json()
-                this.teacherLessons = data.lessons
+                // the page already has the lessons, so it only needs the id numbers to filter by
+                this.teacherLessonIds = data.lessons.map(l => l.id)
             } catch (error) {
-                this.teacherLessons = []
+                this.teacherLessonIds = []
             }
         },
         async updateLesson(lesson, updates) {
@@ -231,10 +241,6 @@ createApp({
                 this.cart = this.cart.filter(e => e.id !== entry.id)
             }
             this.saveCart()
-        },
-        lessonSpaces(entry) {
-            const lesson = this.lessons.find(l => l.id === entry.id)
-            return lesson ? lesson.spaces : 0
         },
         toggleCart() {
             this.showCart = !this.showCart

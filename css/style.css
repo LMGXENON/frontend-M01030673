@@ -94,37 +94,6 @@ h1 {
     gap: 10px 20px;
 }
 
-.teacher-lessons {
-    background-color: #fff;
-    border-radius: 8px;
-    max-width: 1000px;
-    margin: 14px auto 0;
-    padding: 16px 20px;
-}
-
-.teacher-lessons h2 {
-    margin: 0 0 10px;
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.teacher-lessons ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.teacher-lessons li {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 6px;
-}
-
-.teacher-empty {
-    margin: 0;
-    font-size: 14px;
-    color: #555;
-}
-
 .sort-controls label,
 .teacher-controls label {
     display: inline-flex;
