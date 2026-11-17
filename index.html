@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="search-controls">
-                <input type="text" v-model="searchText" placeholder="Search lessons" v-on:keyup.enter="searchLessons">
+                <input type="text" v-model="searchText" placeholder="Search lessons" v-on:input="typeSearch" v-on:keyup.enter="searchLessons">
                 <button class="search-btn" v-on:click="searchLessons">Search</button>
                 <button class="clear-btn" v-if="searchText !== ''" v-on:click="clearSearch">Clear</button>
             </div>

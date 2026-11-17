@@ -9,6 +9,7 @@ createApp({
             sortBy: "subject",
             sortOrder: "asc",
             searchText: "",
+            searchTimer: null,
             showCart: false,
             orderSubmitted: false,
             loadError: false,
@@ -109,6 +110,11 @@ createApp({
                 }
             }
         },
+        typeSearch() {
+            // wait until the typing stops so the page does not ask the server on every letter
+            clearTimeout(this.searchTimer)
+            this.searchTimer = setTimeout(this.searchLessons, 400)
+        },
         async searchLessons() {
             const text = this.searchText.trim()
             if (text === "") {
@@ -122,7 +128,12 @@ createApp({
                 if (!response.ok) {
                     throw new Error("Server returned " + response.status)
                 }
-                this.lessons = await response.json()
+                let lessons = await response.json()
+                if (text !== this.searchText.trim()) {
+                    // more was typed while the server was answering, so this answer is out of date
+                    return
+                }
+                this.lessons = lessons
                 this.applyCartToLessons()
                 await this.loadEnrolment()
             } catch (error) {
@@ -131,6 +142,7 @@ createApp({
             }
         },
         async clearSearch() {
+            clearTimeout(this.searchTimer)
             this.searchText = ""
             await this.fetchData()
         },
