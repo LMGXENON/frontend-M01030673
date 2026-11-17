@@ -33,13 +33,6 @@ These are the four links the coursework brief asks for.
 - The lessons are loaded with a fetchData() method that Vue calls in created() when the page starts
 - If the app can't reach the server it shows an error message with a try again button instead of an empty page. A failed checkout keeps your cart and shows an error message too
 
-## Running it on your computer
-
-1. Open this folder with Live Server and open index.html
-2. The page asks my server on render.com for the lessons and gets the pictures from there too, so nothing has to be running on your computer. The address is in SHOP_URL at the top of js/app.js
-3. To use the server on your own computer instead, start it with node server.js (see the backend README) and change SHOP_URL to http://localhost:3001
-4. If the server cannot be reached you see an error message with a try again button instead of an empty page
-
 ## What I built it with
 
 Vue.js 3 loaded from a CDN, plus plain HTML, CSS and JavaScript. No other frameworks or libraries.
