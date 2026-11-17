@@ -19,11 +19,11 @@ These are the four links the coursework brief asks for.
 
 - Shows the lessons from the server with subject, location, price, spaces and a picture
 - Sorts the lessons by subject, location, price or spaces, in ascending or descending order
-- There is a search box above the lessons with a Search button and a Clear button. The results update as you type: the page waits until you pause, then asks the server for the lessons whose subject starts with what you typed. That wait stops it sending a request for every letter. Search and the Enter key search straight away, Clear brings the whole list back, and a message shows when nothing matches
-- The teacher dropdown lists the teachers from the server. Picking one narrows the lesson list down to the lessons that teacher teaches, and Choose a teacher shows them all again
+- There is a search field above the lessons with a clear button inside it. The results update as you type: the page waits until you pause, then asks the server for the lessons whose subject starts with what you typed. That wait stops it sending a request for every letter. The Enter key searches straight away, the clear button brings the whole list back, and a message shows when nothing matches
+- The teacher filter is a row of buttons under the search field: All, plus the first name of every teacher from the server. Picking one narrows the lesson list down to the lessons that teacher teaches, and All shows every lesson again
 - Every lesson card also shows how many spaces of it are already sold, which comes from the enrolment route on the server
 - Every lesson has an add to cart button. It adds one space to the cart and lowers the number of spaces left. The button stays visible and is disabled when no spaces are left
-- The cart button shows how many spaces are in the cart and opens the cart page. It is disabled when the cart is empty
+- The cart button shows how many spaces are in the cart and opens the cart over the top of the lessons. It is disabled when the cart is empty
 - In the cart the plus and minus buttons change how many spaces of a lesson you have, and Remove drops the lesson from the cart. The spaces go back to the lesson list. The cart shows the price for each line and the total
 - The cart is saved in the browser so it is still there after you refresh the page
 - The checkout form checks the name and phone number with regular expressions. The name must be letters only with single spaces between words and the phone number must be 10 or 11 numbers. The checkout button is disabled until both are correct
