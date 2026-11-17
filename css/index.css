@@ -1,0 +1,1254 @@
+/* Lesson Shop, current Apple layout: translucent nav bar, large title,
+   scope segmented control, large cards, bottom sheet cart.
+
+   Contrast, measured against the surface behind each:
+     label   #1c1c1e on #ffffff  16.9:1
+     label-2 #6e6e73 on #ffffff   4.9:1
+     white   on #0071e3           4.7:1
+     tint    #0057b8 on #dfeafb    5.7:1
+     low     #7a4a00 on #fff4e0    7.8:1
+     full    #a11f16 on #fdeaea    6.9:1
+
+   Motion follows the fluid-interface rules: feedback lands on
+   pointer-down, the card lifts on a short spring-like curve, and the
+   sheet slides from the edge it belongs to, while staying mounted so a
+   dismissal mid-flight reverses from the live position instead of
+   snapping. Nothing is keyframed or delayed. */
+
+:root {
+    /* the page is pinned to the light appearance */
+    color-scheme: light;
+
+    --bg: #f2f2f7;
+    --surface: #ffffff;
+
+    --label: #1c1c1e;
+    --label-2: #6e6e73;
+    --label-3: #86868b;
+
+    --separator: rgba(60, 60, 67, 0.16);
+    --fill: rgba(118, 118, 128, 0.12);
+    --fill-strong: rgba(118, 118, 128, 0.2);
+    --nav-material: rgba(242, 242, 247, 0.72);
+
+    --accent: #0071e3;
+    --accent-hover: #0062c4;
+    --ring: rgba(0, 113, 227, 0.28);
+    --tint-bg: #dfeafb;
+    --tint-bg-hover: #d2e2f8;
+    --tint-ink: #0066cc;
+
+    --warn-bg: #fff4e0;
+    --warn-ink: #7a4a00;
+    --danger-bg: #fdeaea;
+    --danger-ink: #a11f16;
+    --danger-text: #b0251a;
+    --success-bg: #e9f7ec;
+    --success-ink: #248a3d;
+
+    --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 10px 28px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.07), 0 18px 40px rgba(0, 0, 0, 0.13);
+
+    --nav-h: 48px;
+    --spring: cubic-bezier(0.2, 0.9, 0.2, 1);
+    --sheet-spring: cubic-bezier(0.32, 1.06, 0.24, 1);
+
+    /* Type scale: Apple's Dynamic Type roles at the Large setting.
+       Size / line height paired, because each role is a combination. */
+    --fs-large-title: 34px;
+    --lh-large-title: 41px;
+    --fs-title-1: 28px;
+    --lh-title-1: 34px;
+    --fs-title-2: 22px;
+    --lh-title-2: 28px;
+    --fs-title-3: 20px;
+    --lh-title-3: 25px;
+    --fs-headline: 17px;
+    --lh-headline: 22px;
+    --fs-body: 17px;
+    --lh-body: 22px;
+    --fs-subhead: 15px;
+    --lh-subhead: 20px;
+    --fs-footnote: 13px;
+    --lh-footnote: 18px;
+    --fs-caption: 12px;
+    --lh-caption: 16px;
+
+    /* SF tightens as it grows and opens up slightly when small */
+    --track-title: -0.022em;
+    --track-body: -0.012em;
+    --track-small: 0.004em;
+    --track-caps: 0.06em;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* SF Pro is Apple's typeface and ships with macOS and iOS. It has to be
+   reached through system-ui: the literal family name "SF Pro Text" is not
+   registered on macOS and Chrome ignores -apple-system, so putting either
+   first silently falls through to Helvetica. system-ui resolves to SF Pro
+   on macOS and iOS, and to the platform UI font elsewhere. */
+body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--label);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.47;
+    letter-spacing: -0.016em;
+    font-optical-sizing: auto;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+}
+
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-weight: 600;
+    font-optical-sizing: auto;
+    letter-spacing: -0.009em;
+}
+
+p {
+    margin: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+button,
+input,
+select {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* nav bar: the one translucent layer, content scrolls beneath it */
+
+.nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: var(--nav-h);
+    padding: 0 max(20px, calc((100vw - 1120px) / 2));
+    background-color: var(--nav-material);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--separator);
+}
+
+.nav-title {
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.009em;
+}
+
+/* bar button: a nav-bar item is a plain tinted symbol, never a pill */
+.bar-button {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    padding: 0;
+    border: 0;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    transition: opacity 120ms ease-out, background-color 120ms ease-out;
+}
+
+.bar-button svg {
+    width: 22px;
+    height: 22px;
+}
+
+.bar-button:hover:not(:disabled) {
+    background-color: var(--fill);
+}
+
+.bar-button:active:not(:disabled) {
+    opacity: 0.55;
+}
+
+.bar-button:disabled {
+    color: var(--label-3);
+    cursor: not-allowed;
+}
+
+.badge {
+    position: absolute;
+    top: 3px;
+    right: 1px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background-color: #d70015;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+}
+
+/* page: large title, controls, cards */
+
+.page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+}
+
+.page-head {
+    padding: 34px 0 22px;
+}
+
+.page-head h1 {
+    font-size: clamp(38px, 5.6vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.009em;
+}
+
+.page-head p {
+    margin-top: 10px;
+    font-size: 19px;
+    letter-spacing: -0.012em;
+    color: var(--label-2);
+}
+
+.controls {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 20px;
+    border-radius: 980px;
+    background-color: var(--fill);
+    transition: background-color 160ms ease-out, box-shadow 160ms ease-out;
+}
+
+.search:focus-within {
+    background-color: var(--surface);
+    box-shadow: 0 0 0 3px var(--ring);
+}
+
+.search > svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--label-2);
+}
+
+.search input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    font-size: 17px;
+    letter-spacing: -0.016em;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.search input:focus-visible,
+.search-clear:focus-visible {
+    outline: none;
+}
+
+.search input::placeholder {
+    color: var(--label-2);
+}
+
+.search input::-webkit-search-cancel-button,
+.search input::-webkit-search-decoration {
+    display: none;
+}
+
+.search-clear {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--fill-strong);
+    color: var(--label-2);
+    cursor: pointer;
+    transition: background-color 140ms ease-out;
+}
+
+.search-clear svg {
+    width: 11px;
+    height: 11px;
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.segmented {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 11px;
+    background-color: var(--fill);
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.segmented::-webkit-scrollbar {
+    display: none;
+}
+
+.segmented button {
+    flex: none;
+    height: 34px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--label);
+    font-size: 15px;
+    letter-spacing: -0.016em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 160ms ease-out, box-shadow 160ms ease-out;
+}
+
+.segmented button:hover {
+    background-color: var(--fill);
+}
+
+.segmented button[aria-pressed="true"] {
+    background-color: var(--surface);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.sort-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-group select {
+    height: 36px;
+    padding: 0 34px 0 18px;
+    border: 0;
+    border-radius: 980px;
+    background-color: var(--fill);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1.4 1.6L6 6.2l4.6-4.6' fill='none' stroke='%236e6e73' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 11px 7px;
+    font-size: 15px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.icon-button {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 980px;
+    background-color: var(--fill);
+    color: var(--label);
+    cursor: pointer;
+    transition: background-color 140ms ease-out, transform 110ms ease-out;
+}
+
+.icon-button:hover {
+    background-color: var(--fill-strong);
+}
+
+.icon-button:active {
+    transform: scale(0.94);
+}
+
+.icon-button svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 240ms var(--spring);
+}
+
+.icon-button svg.flipped {
+    transform: rotate(180deg);
+}
+
+/* buttons: the three Apple ships on its own site
+   primary   filled blue pill, white label, 44 px tall
+   secondary outlined blue pill, fills on hover
+   text link  blue label only, for dismissal and small actions
+   Add to Cart and Checkout are both filled: they are the two actions the
+   shop exists for. The pressed state darkens the fill. */
+
+.button-primary,
+.button-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 12px 24px;
+    border-radius: 980px;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -0.022em;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 140ms ease-out, color 140ms ease-out, filter 100ms ease-out;
+}
+
+.button-primary {
+    border: 1px solid transparent;
+    background-color: var(--accent);
+    color: #ffffff;
+}
+
+.button-primary:hover:not(:disabled) {
+    background-color: var(--accent-hover);
+}
+
+.button-primary:active:not(:disabled) {
+    filter: brightness(0.9);
+}
+
+.button-secondary {
+    border: 1px solid var(--accent);
+    background-color: transparent;
+    color: var(--accent);
+}
+
+.button-secondary:hover:not(:disabled) {
+    background-color: var(--accent);
+    color: #ffffff;
+}
+
+.button-secondary:active:not(:disabled) {
+    filter: brightness(0.9);
+}
+
+.button-primary.wide {
+    width: 100%;
+    min-height: 50px;
+    margin-top: 20px;
+    font-size: 17px;
+}
+
+.button-primary:disabled,
+.button-secondary:disabled {
+    border-color: transparent;
+    background-color: #e8e8ed;
+    color: #86868b;
+    filter: none;
+    cursor: not-allowed;
+}
+
+.text-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 6px;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    font-size: 17px;
+    letter-spacing: -0.022em;
+    cursor: pointer;
+    transition: opacity 100ms ease-out;
+}
+
+.text-link:hover {
+    text-decoration: underline;
+}
+
+.text-link:active {
+    opacity: 0.5;
+}
+
+.text-link.destructive {
+    color: var(--danger-text);
+}
+
+/* cards */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--surface);
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: transform 220ms var(--spring), box-shadow 220ms var(--spring);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.card:active {
+    transform: scale(0.995);
+}
+
+.card-media img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    background-color: var(--fill);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 16px 18px 18px;
+}
+
+.card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.card-top h2 {
+    font-size: 21px;
+    letter-spacing: -0.009em;
+}
+
+.seats {
+    flex: none;
+    padding: 4px 11px;
+    border-radius: 980px;
+    background-color: var(--fill);
+    color: var(--label-2);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.seats.low {
+    background-color: var(--warn-bg);
+    color: var(--warn-ink);
+}
+
+.seats.full {
+    background-color: var(--danger-bg);
+    color: var(--danger-ink);
+}
+
+.card-meta {
+    margin-top: 6px;
+    font-size: 17px;
+    letter-spacing: -0.016em;
+    color: var(--label-2);
+}
+
+.card-enrol {
+    margin-top: 3px;
+    font-size: 15px;
+    color: var(--label-2);
+}
+
+.card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 18px;
+}
+
+.card-cta {
+    min-height: 40px;
+    padding: 9px 20px;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.price {
+    font-size: 21px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.009em;
+}
+
+.empty {
+    grid-column: 1 / -1;
+    padding: 64px 24px;
+    color: var(--label-2);
+    font-size: 19px;
+    letter-spacing: -0.012em;
+    text-align: center;
+}
+
+.banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 18px 20px;
+    border-radius: 18px;
+    background-color: var(--surface);
+    box-shadow: var(--card-shadow);
+    font-size: 17px;
+    letter-spacing: -0.016em;
+    color: var(--label-2);
+}
+
+.banner strong {
+    color: var(--label);
+    font-weight: 600;
+}
+
+/* cart sheet */
+
+.sheet-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    visibility: hidden;
+    pointer-events: none;
+    transition: visibility 0s linear 500ms;
+}
+
+.sheet-overlay.open {
+    visibility: visible;
+    pointer-events: auto;
+    transition: visibility 0s;
+}
+
+.scrim {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.32);
+    opacity: 0;
+    transition: opacity 260ms ease-out;
+}
+
+.sheet-overlay.open .scrim {
+    opacity: 1;
+}
+
+.sheet {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(680px, 100%);
+    max-height: 88vh;
+    background-color: var(--surface);
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -10px 44px rgba(0, 0, 0, 0.2);
+    transform: translateY(100%);
+    transition: transform 480ms var(--sheet-spring);
+    overscroll-behavior: contain;
+}
+
+.sheet-overlay.open .sheet {
+    transform: translateY(0);
+}
+
+.grabber {
+    width: 40px;
+    height: 5px;
+    margin: 8px auto 0;
+    border-radius: 3px;
+    background-color: var(--fill-strong);
+}
+
+.sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 20px 12px;
+}
+
+.sheet-head h2 {
+    font-size: 22px;
+    letter-spacing: -0.009em;
+}
+
+.sheet-body {
+    padding: 0 20px 26px;
+    overflow-y: auto;
+}
+
+.cart-list li {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--separator);
+}
+
+.cart-thumb {
+    width: 52px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 10px;
+    background-color: var(--fill);
+}
+
+.cart-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.cart-name {
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.016em;
+}
+
+.cart-meta {
+    font-size: 15px;
+    color: var(--label-2);
+}
+
+/* stepper: one rounded rect, two halves, a hairline between them */
+.stepper {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9px;
+    background-color: var(--fill);
+    overflow: hidden;
+}
+
+.stepper button {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    transition: background-color 120ms ease-out, opacity 100ms ease-out;
+}
+
+.stepper button:first-child {
+    box-shadow: inset -1px 0 0 var(--separator);
+}
+
+.stepper button:hover:not(:disabled) {
+    background-color: var(--fill-strong);
+}
+
+.stepper button:active:not(:disabled) {
+    opacity: 0.5;
+}
+
+.stepper button:disabled {
+    color: var(--label-3);
+    cursor: not-allowed;
+}
+
+.stepper button svg {
+    width: 11px;
+    height: 11px;
+}
+
+.stepper-value {
+    min-width: 28px;
+    padding: 0 2px;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+
+.cart-line-total {
+    min-width: 52px;
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.total-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--separator);
+    font-size: 15px;
+    color: var(--label-2);
+}
+
+.total-line strong {
+    color: var(--label);
+    font-size: 28px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.009em;
+}
+
+.field {
+    margin-top: 16px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--label-2);
+}
+
+.field input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background-color: var(--fill);
+    font-size: 17px;
+    letter-spacing: -0.016em;
+    transition: background-color 150ms ease-out, box-shadow 150ms ease-out, border-color 150ms ease-out;
+}
+
+.field input::placeholder {
+    color: var(--label-2);
+}
+
+.field input:focus-visible {
+    outline: none;
+    background-color: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--ring);
+}
+
+.field input[aria-invalid="true"] {
+    border-color: var(--danger-text);
+}
+
+.hint {
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--label-2);
+}
+
+.field-error {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--danger-text);
+}
+
+.order-error {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background-color: var(--danger-bg);
+    color: var(--danger-ink);
+    font-size: 15px;
+}
+
+.cart-empty {
+    padding: 40px 0 24px;
+    text-align: center;
+}
+
+.cart-empty h3 {
+    font-size: 21px;
+}
+
+.cart-empty p {
+    margin: 6px 0 18px;
+    font-size: 17px;
+    color: var(--label-2);
+}
+
+.placed {
+    padding: 30px 0 10px;
+    text-align: center;
+}
+
+.tick {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-color: var(--success-bg);
+    color: var(--success-ink);
+}
+
+.tick svg {
+    width: 28px;
+    height: 28px;
+}
+
+.placed h3 {
+    margin-top: 16px;
+    font-size: 24px;
+    letter-spacing: -0.009em;
+}
+
+.placed p {
+    margin: 8px 0 22px;
+    font-size: 17px;
+    color: var(--label-2);
+}
+
+/* wider screens: the sheet becomes a centred card that still rises from the bottom */
+
+@media (min-width: 760px) {
+    .sheet-overlay {
+        padding-bottom: 32px;
+    }
+
+    .sheet {
+        border-radius: 22px;
+        max-height: 84vh;
+    }
+}
+
+@media (max-width: 620px) {
+    .page {
+        padding: 0 16px 64px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .card {
+        border-radius: 20px;
+    }
+
+    .sheet-head {
+        padding: 10px 16px 12px;
+    }
+
+    .sheet-body {
+        padding: 0 16px 22px;
+    }
+
+    .cart-list li {
+        grid-template-columns: 44px minmax(0, 1fr) auto auto auto;
+        row-gap: 8px;
+    }
+
+    .cart-thumb {
+        width: 44px;
+        height: 34px;
+    }
+
+    .cart-line-total {
+        text-align: right;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sheet {
+        transform: none;
+        transition: opacity 200ms ease-out;
+        opacity: 0;
+    }
+
+    .sheet-overlay.open .sheet {
+        opacity: 1;
+    }
+
+    .card,
+    .card:hover,
+    .bar-button,
+    .button-primary,
+    .button-secondary,
+    .text-link,
+    .icon-button,
+    .icon-button svg,
+    .stepper button,
+    .search,
+    .search-clear,
+    .segmented button,
+    .field input {
+        transition: none;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .nav-bar {
+        background-color: var(--bg);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
+    .scrim {
+        background-color: rgba(0, 0, 0, 0.48);
+    }
+}
+
+@media (prefers-contrast: more) {
+    :root {
+        --label-2: #3a3a3c;
+        --separator: rgba(0, 0, 0, 0.4);
+        --fill: rgba(0, 0, 0, 0.1);
+        --fill-strong: rgba(0, 0, 0, 0.2);
+    }
+
+    .card,
+    .banner,
+    .sheet {
+        box-shadow: 0 0 0 2px var(--label);
+    }
+
+    .segmented button[aria-pressed="true"] {
+        box-shadow: 0 0 0 2px var(--label);
+    }
+}
+
+/* Type scale
+   Every role on the page is assigned here from the tokens above, so no
+   component keeps a one-off size. Apple pairs size with line height and
+   tightens tracking as type grows:
+
+     role         size / lead   weight   tracking
+     Large Title  34 / 41       700      -0.022em   page title
+     Title 1      28 / 34       600      -0.022em   cart total
+     Title 2      22 / 28       600      -0.022em   sheet title, price
+     Title 3      20 / 25       600      -0.022em   card subject
+     Headline     17 / 22       600      -0.012em   nav title
+     Body         17 / 22       400      -0.012em   paragraphs, fields, buttons
+     Subhead      15 / 20       400       0         meta, segments, cart meta
+     Footnote     13 / 18       400/500   0.004em   seats, hints, labels
+     Caption      12 / 16       600       0         badge count */
+
+body {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-body);
+}
+
+h1,
+h2,
+h3 {
+    letter-spacing: var(--track-title);
+}
+
+.nav-title {
+    font-size: var(--fs-headline);
+    line-height: var(--lh-headline);
+    letter-spacing: var(--track-body);
+    font-weight: 600;
+}
+
+.page-head h1 {
+    font-size: var(--fs-large-title);
+    line-height: var(--lh-large-title);
+    letter-spacing: var(--track-title);
+    font-weight: 700;
+}
+
+.page-head p {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-body);
+}
+
+.search input {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-body);
+}
+
+.segmented button,
+.sort-group select {
+    font-size: var(--fs-subhead);
+    line-height: var(--lh-subhead);
+    letter-spacing: 0;
+}
+
+.button-primary,
+.button-secondary,
+.text-link,
+.card-cta {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-body);
+}
+
+.card-top h2 {
+    font-size: var(--fs-title-3);
+    line-height: var(--lh-title-3);
+    letter-spacing: var(--track-title);
+}
+
+.card-meta {
+    font-size: var(--fs-subhead);
+    line-height: var(--lh-subhead);
+    letter-spacing: 0;
+}
+
+.card-enrol,
+.seats {
+    font-size: var(--fs-footnote);
+    line-height: var(--lh-footnote);
+    letter-spacing: var(--track-small);
+}
+
+.seats {
+    font-weight: 500;
+}
+
+.price {
+    font-size: var(--fs-title-2);
+    line-height: var(--lh-title-2);
+    letter-spacing: var(--track-title);
+}
+
+.badge {
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+    letter-spacing: 0;
+}
+
+.banner,
+.empty {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-body);
+}
+
+.sheet-head h2 {
+    font-size: var(--fs-title-2);
+    line-height: var(--lh-title-2);
+    letter-spacing: var(--track-title);
+}
+
+.cart-name {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-body);
+    font-weight: 500;
+}
+
+.cart-meta,
+.stepper-value,
+.total-line {
+    font-size: var(--fs-subhead);
+    line-height: var(--lh-subhead);
+    letter-spacing: 0;
+}
+
+.cart-line-total {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-body);
+}
+
+.total-line strong {
+    font-size: var(--fs-title-1);
+    line-height: var(--lh-title-1);
+    letter-spacing: var(--track-title);
+}
+
+.field label {
+    font-size: var(--fs-footnote);
+    line-height: var(--lh-footnote);
+    letter-spacing: var(--track-small);
+    font-weight: 500;
+}
+
+.field input {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    letter-spacing: var(--track-body);
+}
+
+.hint,
+.field-error {
+    font-size: var(--fs-footnote);
+    line-height: var(--lh-footnote);
+    letter-spacing: var(--track-small);
+}
+
+.order-error {
+    font-size: var(--fs-subhead);
+    line-height: var(--lh-subhead);
+}
+
+.cart-empty h3,
+.placed h3 {
+    font-size: var(--fs-title-3);
+    line-height: var(--lh-title-3);
+    letter-spacing: var(--track-title);
+}
+
+.cart-empty p,
+.placed p {
+    font-size: var(--fs-subhead);
+    line-height: var(--lh-subhead);
+    letter-spacing: 0;
+}
